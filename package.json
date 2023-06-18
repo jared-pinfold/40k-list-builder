@@ -1,7 +1,7 @@
 {
-  "name": "boilerplate-react",
+  "name": "40k-list-builder",
   "version": "0.2.0",
-  "description": "React!",
+  "description": "40k Army list builder",
   "repository": "https://github.com/dev-academy-challenges/react-boilerplate.git",
   "main": "server/index.js",
   "scripts": {
