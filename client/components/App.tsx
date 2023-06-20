@@ -25,17 +25,29 @@ function App() {
   function handleExport() {
     const ExportList = new JsPDF()
     let yCoord = 20
+    ExportList.setFontSize(20)
+    ExportList.text(
+      20,
+      yCoord,
+      `${form.armyName} - ${points}pts`
+    )
+    yCoord += 10
     list.map((unit) => {
-      ExportList.setFontSize(22)
+      if (yCoord > 275) {
+        ExportList.addPage()
+        yCoord = 20
+      }
+      ExportList.setFontSize(15)
       ExportList.text(
         20,
         yCoord,
         `${unit.models} ${unit.name} - ${unit.points}pts`
       )
-      yCoord += 10
-      ExportList.setFontSize(16)
+      yCoord += 5
+      ExportList.setFontSize(10)
       ExportList.text(20, yCoord, `Wargear: ${unit.wargear}`)
-      yCoord += 20
+      console.log("map ", unit.name, ' ', yCoord)
+      yCoord += 10
     })
     ExportList.save(`${form.armyName.replace(' ', '_')}.pdf`)
   }
