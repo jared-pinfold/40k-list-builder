@@ -1,23 +1,51 @@
 import { useEffect, useState } from 'react'
 import { data, Unit } from '../data'
+import JsPDF from 'jspdf'
 
 function App() {
   const [points, setPoints] = useState(0)
   const [pool, setPool] = useState(data)
   const [list, setList] = useState([] as Unit[])
+  const [form, setForm] = useState({ armyName: '', pointsLimit: 0 })
 
   useEffect(() => {
-    setPoints(list.reduce((a,c) => a + c.points, 0))
+    setPoints(list.reduce((a, c) => a + c.points, 0))
   }, [pool, list])
 
   function handleAdd(unit: Unit) {
     setList([...list, unit])
-    setPool(pool.filter(currentUnit => currentUnit !== unit))
+    setPool(pool.filter((currentUnit) => currentUnit !== unit))
   }
 
   function handleRemove(unit: Unit) {
     setPool([...pool, unit])
-    setList(list.filter(currentUnit => currentUnit !== unit))
+    setList(list.filter((currentUnit) => currentUnit !== unit))
+  }
+
+  function handleExport() {
+    const ExportList = new JsPDF()
+    let yCoord = 20
+    list.map((unit) => {
+      ExportList.setFontSize(22)
+      ExportList.text(
+        20,
+        yCoord,
+        `${unit.models} ${unit.name} - ${unit.points}pts`
+      )
+      yCoord += 10
+      ExportList.setFontSize(16)
+      ExportList.text(20, yCoord, `Wargear: ${unit.wargear}`)
+      yCoord += 20
+    })
+    ExportList.save(`${form.armyName.replace(' ', '_')}.pdf`)
+  }
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    })
+    console.log(form)
   }
 
   return (
@@ -27,36 +55,73 @@ function App() {
         Click <b>add</b> to move a unit into the army list, and <b>remove</b> to
         move it back to the pool
       </p>
+      <form>
+        <label htmlFor="army-name">Army name * </label>
+        <input
+          onChange={handleChange}
+          type="text"
+          id="army-name"
+          name="armyName"
+          value={form.armyName}
+          required
+        ></input>
+        <label htmlFor="army-name">Points limit * </label>
+        <select onChange={handleChange} name="pointsLimit">
+          <option value="0">Choose a points limit</option>
+          <option value="500">500</option>
+          <option value="1000">1,000</option>
+          <option value="2000">2,000</option>
+          <option value="3000">3,000</option>
+        </select>
+      </form>
       <div className="container">
         <section className="column">
           <h2>Pool</h2>
 
           {pool.map((unit) => (
             <article key={`pool${unit.id}`}>
-              <h3>
+              <h3
+                style={
+                  points + unit.points > form.pointsLimit && form.pointsLimit
+                    ? { color: 'red' }
+                    : { color: 'black' }
+                }
+              >
                 {unit.models} {unit.name} - {unit.points}pts{' '}
-                <button onClick={() =>handleAdd(unit)}>Add</button>
+                <button onClick={() => handleAdd(unit)}>Add</button>
               </h3>
-              <p>
-                Wargear: {unit.wargear}
-              </p>
+              <p>Wargear: {unit.wargear}</p>
             </article>
           ))}
         </section>
-        <section className="column">
-          <h2>Army - {points} points <button>Export</button></h2>
+        <section className="column" id="list">
+          <h2>
+            Army -{' '}
+            <span
+              style={
+                points > form.pointsLimit
+                  ? { color: 'red' }
+                  : { color: 'black' }
+              }
+            >
+              {points} points
+            </span>{' '}
+            <button onClick={handleExport}>Export</button>
+          </h2>
 
-          {list.map((unit) => (
-            <article key={`list${unit.id}`}>
-              <h3>
-              {unit.models} {unit.name} - {unit.points}pts{' '}
-                <button onClick={() => handleRemove(unit)}>Remove</button>
-              </h3>
-              <p>
-                Wargear: {unit.wargear}
-              </p>
-            </article>
-          ))}
+          {list ? (
+            list.map((unit) => (
+              <article key={`list${unit.id}`}>
+                <h3>
+                  {unit.models} {unit.name} - {unit.points}pts{' '}
+                  <button onClick={() => handleRemove(unit)}>Remove</button>
+                </h3>
+                <p>Wargear: {unit.wargear}</p>
+              </article>
+            ))
+          ) : (
+            <div></div>
+          )}
         </section>
       </div>
     </div>
