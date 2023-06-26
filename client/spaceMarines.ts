@@ -1,12 +1,6 @@
-export interface Unit {
-  id: number
-  name: string
-  models: number
-  wargear: string
-  points: number
-}
+import { Unit } from "./models"
 
-export const data: Unit[] = [
+export const spaceMarinesData: Unit[] = [
   {
     id: 1,
     name: 'Chaplain on Bike',

@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
-import { data, Unit } from '../data'
+import { spaceMarinesData } from '../spaceMarines'
+import { Unit } from '../models'
 import JsPDF from 'jspdf'
 
 function App() {
   const [points, setPoints] = useState(0)
-  const [pool, setPool] = useState(data)
+  const [pool, setPool] = useState(spaceMarinesData)
   const [list, setList] = useState([] as Unit[])
   const [form, setForm] = useState({ armyName: '', pointsLimit: 0 })
 
@@ -14,12 +15,12 @@ function App() {
 
   function handleAdd(unit: Unit) {
     setList([...list, unit])
-    setPool(pool.filter((currentUnit) => currentUnit !== unit))
+    setPool(pool.filter((currentUnit: Unit) => currentUnit !== unit))
   }
 
   function handleRemove(unit: Unit) {
     setPool([...pool, unit])
-    setList(list.filter((currentUnit) => currentUnit !== unit))
+    setList(list.filter((currentUnit: Unit) => currentUnit !== unit))
   }
 
   function handleExport() {
