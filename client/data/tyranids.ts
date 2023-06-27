@@ -1,4 +1,4 @@
-import { Unit } from "./models"
+import { Unit } from "../models"
 
 export const tyranidsData: Unit[] = [
   {

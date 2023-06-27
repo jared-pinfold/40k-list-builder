@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
-import { spaceMarinesData } from '../spaceMarines'
+import { spaceMarinesData } from '../data/spaceMarines'
+import { tyranidsData } from '../data/tyranids'
 import { Unit } from '../models'
 import JsPDF from 'jspdf'
 
 function App() {
   const [points, setPoints] = useState(0)
-  const [pool, setPool] = useState(spaceMarinesData)
+  const [pool, setPool] = useState([] as Unit[])
   const [list, setList] = useState([] as Unit[])
   const [form, setForm] = useState({ armyName: '', pointsLimit: 0 })
 
@@ -61,6 +62,19 @@ function App() {
     console.log(form)
   }
 
+  function handleFaction(e: React.ChangeEvent<HTMLInputElement>) {
+    switch(e.target.value) {
+      case "Space Marines": 
+        setPool(spaceMarinesData)
+        setList([] as Unit[])
+        break
+      case "Tyranids":
+        setPool(tyranidsData)
+        setList([] as Unit[])
+        break
+    }
+  }
+
   return (
     <div>
       <h1>{`Jared's Warhammer 40k List builder`}</h1>
@@ -86,10 +100,16 @@ function App() {
           <option value="2000">2,000</option>
           <option value="3000">3,000</option>
         </select>
+        <label htmlFor="army-faction">Faction * </label>
+        <select onChange={handleFaction} name="faction">
+          <option value="0">Choose a faction</option>
+          <option value="Space Marines">Space Marines</option>
+          <option value="Tyranids">Tyranids</option>
+        </select>
       </form>
       <div className="container">
         <section className="column">
-          <h2>Pool</h2>
+          <h2>Unit Pool</h2>
 
           {pool.map((unit) => (
             <article key={`pool${unit.id}`}>
