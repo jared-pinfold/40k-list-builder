@@ -15,7 +15,6 @@
   </details>
 
   ## Todo
-  - Fix bug where removing a unit from the list doesn't put it back in its original place in the pool
   - Add category dividers in the pool and list, and update PDF export function accordingly
   - Refactor code into separate components
   - Add styling!
