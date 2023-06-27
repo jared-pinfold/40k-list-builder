@@ -5,3 +5,10 @@ export interface Unit {
   wargear: string
   points: number
 }
+
+export interface List {
+  characters: Unit[]
+  battleline: Unit[]
+  other: Unit[]
+  dedicatedTransport: Unit[]
+}

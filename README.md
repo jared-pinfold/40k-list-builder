@@ -14,3 +14,8 @@
     ```
   </details>
 
+  ## Todo
+  - Add category dividers in the pool and list, and update PDF export function accordingly
+  - Refactor code into separate components
+  - Add styling!
+
