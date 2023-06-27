@@ -1,31 +1,40 @@
 import { useEffect, useState } from 'react'
 import { spaceMarinesData } from '../data/spaceMarines'
 import { tyranidsData } from '../data/tyranids'
-import { Unit } from '../models'
+import { Unit, List } from '../models'
 import JsPDF from 'jspdf'
 
 function App() {
-  const [points, setPoints] = useState(0)
-  const [pool, setPool] = useState([] as Unit[])
-  const [list, setList] = useState([] as Unit[])
-  const [form, setForm] = useState({ armyName: '', pointsLimit: 0 })
+  const emptyList: List = {
+    characters: [],
+    battleline: [],
+    other: [],
+    dedicatedTransport: []
+  } as List
+  type Attribute = keyof List
 
+  const [points, setPoints] = useState(0)
+  const [pool, setPool] = useState(emptyList)
+  const [list, setList] = useState(emptyList)
+  const [form, setForm] = useState({ armyName: '', pointsLimit: 0 })
+  
   useEffect(() => {
-    setPoints(list.reduce((a, c) => a + c.points, 0))
+    setPoints([...list.characters, ...list.battleline, ...list.other, ...list.dedicatedTransport].reduce((a, c) => a + c.points, 0))
   }, [pool, list])
 
-  function handleAdd(unit: Unit) {
-    setList([...list, unit])
-    setPool(pool.filter((currentUnit: Unit) => currentUnit !== unit))
+  function handleAdd(unit: Unit, category: Attribute) {
+    setList({...list, [category]: [...list[category], unit].sort()})
+    setPool({...pool, [category]: pool[category].filter((currentUnit: Unit) => currentUnit !== unit)})
   }
 
-  function handleRemove(unit: Unit) {
-    setPool([...pool, unit])
-    setList(list.filter((currentUnit: Unit) => currentUnit !== unit))
+  function handleRemove(unit: Unit, category: Attribute) {
+    setPool({...pool, [category]: [...pool[category], unit].sort()})
+    setList({...list, [category]: list[category].filter((currentUnit: Unit) => currentUnit !== unit)})
   }
 
   function handleExport() {
     const ExportList = new JsPDF()
+    const flatList = [...list.characters, ...list.battleline, ...list.other, ...list.dedicatedTransport]
     let yCoord = 20
     ExportList.setFontSize(20)
     ExportList.text(
@@ -34,7 +43,7 @@ function App() {
       `${form.armyName} - ${points}pts`
     )
     yCoord += 10
-    list.map((unit) => {
+    flatList.map((unit) => {
       if (yCoord > 275) {
         ExportList.addPage()
         yCoord = 20
@@ -66,11 +75,11 @@ function App() {
     switch(e.target.value) {
       case "Space Marines": 
         setPool(spaceMarinesData)
-        setList([] as Unit[])
+        setList(emptyList)
         break
       case "Tyranids":
         setPool(tyranidsData)
-        setList([] as Unit[])
+        setList(emptyList)
         break
     }
   }
@@ -111,7 +120,7 @@ function App() {
         <section className="column">
           <h2>Unit Pool</h2>
 
-          {pool.map((unit) => (
+          {pool.characters.map((unit) => (
             <article key={`pool${unit.id}`}>
               <h3
                 style={
@@ -121,7 +130,52 @@ function App() {
                 }
               >
                 {unit.models} {unit.name} - {unit.points}pts{' '}
-                <button onClick={() => handleAdd(unit)}>Add</button>
+                <button onClick={() => handleAdd(unit, 'characters')}>Add</button>
+              </h3>
+              <p>Wargear: {unit.wargear}</p>
+            </article>
+          ))}
+                    {pool.battleline.map((unit) => (
+            <article key={`pool${unit.id}`}>
+              <h3
+                style={
+                  points + unit.points > form.pointsLimit && form.pointsLimit
+                    ? { color: 'red' }
+                    : { color: 'black' }
+                }
+              >
+                {unit.models} {unit.name} - {unit.points}pts{' '}
+                <button onClick={() => handleAdd(unit, 'battleline')}>Add</button>
+              </h3>
+              <p>Wargear: {unit.wargear}</p>
+            </article>
+          ))}
+                    {pool.other.map((unit) => (
+            <article key={`pool${unit.id}`}>
+              <h3
+                style={
+                  points + unit.points > form.pointsLimit && form.pointsLimit
+                    ? { color: 'red' }
+                    : { color: 'black' }
+                }
+              >
+                {unit.models} {unit.name} - {unit.points}pts{' '}
+                <button onClick={() => handleAdd(unit, 'other')}>Add</button>
+              </h3>
+              <p>Wargear: {unit.wargear}</p>
+            </article>
+          ))}
+                    {pool.dedicatedTransport.map((unit) => (
+            <article key={`pool${unit.id}`}>
+              <h3
+                style={
+                  points + unit.points > form.pointsLimit && form.pointsLimit
+                    ? { color: 'red' }
+                    : { color: 'black' }
+                }
+              >
+                {unit.models} {unit.name} - {unit.points}pts{' '}
+                <button onClick={() => handleAdd(unit, 'dedicatedTransport')}>Add</button>
               </h3>
               <p>Wargear: {unit.wargear}</p>
             </article>
@@ -142,12 +196,12 @@ function App() {
             <button onClick={handleExport}>Export</button>
           </h2>
 
-          {list ? (
-            list.map((unit) => (
+          {list.characters ? (
+            list.characters.map((unit) => (
               <article key={`list${unit.id}`}>
                 <h3>
                   {unit.models} {unit.name} - {unit.points}pts{' '}
-                  <button onClick={() => handleRemove(unit)}>Remove</button>
+                  <button onClick={() => handleRemove(unit, 'characters')}>Remove</button>
                 </h3>
                 <p>Wargear: {unit.wargear}</p>
               </article>
@@ -155,6 +209,40 @@ function App() {
           ) : (
             <div></div>
           )}
+                    {list.battleline && (
+            list.battleline.map((unit) => (
+              <article key={`list${unit.id}`}>
+                <h3>
+                  {unit.models} {unit.name} - {unit.points}pts{' '}
+                  <button onClick={() => handleRemove(unit, 'battleline')}>Remove</button>
+                </h3>
+                <p>Wargear: {unit.wargear}</p>
+              </article>
+            ))
+          )}
+                              {list.other && (
+            list.other.map((unit) => (
+              <article key={`list${unit.id}`}>
+                <h3>
+                  {unit.models} {unit.name} - {unit.points}pts{' '}
+                  <button onClick={() => handleRemove(unit, 'other')}>Remove</button>
+                </h3>
+                <p>Wargear: {unit.wargear}</p>
+              </article>
+            ))
+          )}
+                              {list.dedicatedTransport && (
+            list.dedicatedTransport.map((unit) => (
+              <article key={`list${unit.id}`}>
+                <h3>
+                  {unit.models} {unit.name} - {unit.points}pts{' '}
+                  <button onClick={() => handleRemove(unit, 'dedicatedTransport')}>Remove</button>
+                </h3>
+                <p>Wargear: {unit.wargear}</p>
+              </article>
+            ))
+          )}
+
         </section>
       </div>
     </div>
