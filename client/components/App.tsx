@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
-import JsPDF from 'jspdf'
-import { sortStr } from '../utils'
+import { sortStr, exportPDF } from '../utils'
 import { spaceMarinesData } from '../data/spaceMarines'
 import { tyranidsData } from '../data/tyranids'
 import { Unit, List } from '../models'
@@ -48,38 +47,6 @@ function App() {
         (currentUnit: Unit) => currentUnit !== unit
       ),
     })
-  }
-
-  function handleExport() {
-    const ExportList = new JsPDF()
-    const flatList = [
-      ...list.characters,
-      ...list.battleline,
-      ...list.other,
-      ...list.dedicatedTransport,
-    ]
-    let yCoord = 20
-    ExportList.setFontSize(20)
-    ExportList.text(20, yCoord, `${form.armyName} - ${points}pts`)
-    yCoord += 10
-    flatList.map((unit) => {
-      if (yCoord > 275) {
-        ExportList.addPage()
-        yCoord = 20
-      }
-      ExportList.setFontSize(15)
-      ExportList.text(
-        20,
-        yCoord,
-        `${unit.models} ${unit.name} - ${unit.points}pts`
-      )
-      yCoord += 5
-      ExportList.setFontSize(10)
-      ExportList.text(20, yCoord, `Wargear: ${unit.wargear}`)
-      console.log('map ', unit.name, ' ', yCoord)
-      yCoord += 10
-    })
-    ExportList.save(`${form.armyName.replace(/ /gi, '_')}.pdf`)
   }
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -221,7 +188,7 @@ function App() {
             >
               {points} points
             </span>{' '}
-            <button onClick={handleExport}>Export</button>
+            <button onClick={() => exportPDF(list, form, points)}>Export</button>
           </h2>
           <p>** Characters **</p>
           {list.characters ? (
