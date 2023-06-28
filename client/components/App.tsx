@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react'
 import { sortStr, exportPDF, emptyList } from '../utils'
-import { spaceMarinesData } from '../data/spaceMarines'
-import { tyranidsData } from '../data/tyranids'
 import { Unit, List } from '../models'
 import { FormComponent } from './Form'
+import { Pool } from './Pool'
 
 function App() {
 
@@ -25,15 +24,15 @@ function App() {
     )
   }, [pool, list])
 
-  function handleAdd(unit: Unit, category: Attribute) {
-    setList({ ...list, [category]: [...list[category], unit].sort(sortStr) })
-    setPool({
-      ...pool,
-      [category]: pool[category].filter(
-        (currentUnit: Unit) => currentUnit !== unit
-      ),
-    })
-  }
+  // function handleAdd(unit: Unit, category: Attribute) {
+  //   setList({ ...list, [category]: [...list[category], unit].sort(sortStr) })
+  //   setPool({
+  //     ...pool,
+  //     [category]: pool[category].filter(
+  //       (currentUnit: Unit) => currentUnit !== unit
+  //     ),
+  //   })
+  // }
 
   function handleRemove(unit: Unit, category: Attribute) {
     setPool({ ...pool, [category]: [...pool[category], unit].sort(sortStr) })
@@ -57,7 +56,10 @@ function App() {
       }}/>
       
       <div className="container">
-        <section className="column">
+        <Pool {...{
+          list, setList, pool, setPool, form, points
+        }}/>
+        {/* <section className="column">
           <h2>Unit Pool</h2>
           <p>** Characters **</p>
           {pool.characters.map((unit) => (
@@ -129,7 +131,9 @@ function App() {
               <p>Wargear: {unit.wargear}</p>
             </article>
           ))}
-        </section>
+        </section> */}
+
+
         <section className="column" id="list">
           <h2>
             Army -{' '}
