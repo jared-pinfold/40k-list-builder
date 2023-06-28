@@ -1,7 +1,7 @@
-import { Unit, List, Form } from "../models"
-import { sortStr } from "../utils"
+import { Unit, List, Form, Attribute } from '../models'
+import { sortStr } from '../utils'
+import { UnitComponent } from './Unit'
 
-type Attribute = keyof List
 interface Props {
   form: Form
   setPool: React.Dispatch<React.SetStateAction<List>>
@@ -11,9 +11,8 @@ interface Props {
   points: number
 }
 
-export function Pool (props: Props) {
-
-  const {form, setPool, setList, list, pool, points } = props
+export function Pool(props: Props) {
+  const { form, setPool, setList, list, pool, points } = props
 
   function handleAdd(unit: Unit, category: Attribute) {
     setList({ ...list, [category]: [...list[category], unit].sort(sortStr) })
@@ -25,77 +24,87 @@ export function Pool (props: Props) {
     })
   }
 
-  return <section className="column">
-  <h2>Unit Pool</h2>
-  <p>** Characters **</p>
-  {pool.characters.map((unit) => (
-    <article className='unit' key={`pool${unit.id}`}>
-      <h3
-        style={
-          points + unit.points > form.pointsLimit && form.pointsLimit
-            ? { color: 'red' }
-            : { color: 'black' }
-        }
-      >
-        {unit.models} {unit.name} - {unit.points}pts{' '}
-        <button onClick={() => handleAdd(unit, 'characters')}>
-          Add
-        </button>
-      </h3>
-      <p>Wargear: {unit.wargear}</p>
-    </article>
-  ))}
-  <p>** Battleline **</p>
-  {pool.battleline.map((unit) => (
-    <article className='unit' key={`pool${unit.id}`}>
-      <h3
-        style={
-          points + unit.points > form.pointsLimit && form.pointsLimit
-            ? { color: 'red' }
-            : { color: 'black' }
-        }
-      >
-        {unit.models} {unit.name} - {unit.points}pts{' '}
-        <button onClick={() => handleAdd(unit, 'battleline')}>
-          Add
-        </button>
-      </h3>
-      <p>Wargear: {unit.wargear}</p>
-    </article>
-  ))}
-  <p>** Other **</p>
-  {pool.other.map((unit) => (
-    <article className='unit' key={`pool${unit.id}`}>
-      <h3
-        style={
-          points + unit.points > form.pointsLimit && form.pointsLimit
-            ? { color: 'red' }
-            : { color: 'black' }
-        }
-      >
-        {unit.models} {unit.name} - {unit.points}pts{' '}
-        <button onClick={() => handleAdd(unit, 'other')}>Add</button>
-      </h3>
-      <p>Wargear: {unit.wargear}</p>
-    </article>
-  ))}
-  <p>** Dedicated Transport **</p>
-  {pool.dedicatedTransport.map((unit) => (
-    <article className='unit' key={`pool${unit.id}`}>
-      <h3
-        style={
-          points + unit.points > form.pointsLimit && form.pointsLimit
-            ? { color: 'red' }
-            : { color: 'black' }
-        }
-      >
-        {unit.models} {unit.name} - {unit.points}pts{' '}
-        <button onClick={() => handleAdd(unit, 'dedicatedTransport')}>
-          Add
-        </button>
-      </h3>
-      <p>Wargear: {unit.wargear}</p>
-    </article>
-  ))}
-</section>
+  return (
+    <section className="column">
+      <h2>Unit Pool</h2>
+      <p>** Characters **</p>
+
+      {pool.characters &&
+        pool.characters.map((unit) => (
+          <UnitComponent
+            className="unit"
+            key={`list${unit.id}`}
+            {...{
+              unit,
+              cb: handleAdd,
+              category: 'characters',
+              buttonText: 'Add',
+              style:
+                points + unit.points > form.pointsLimit && form.pointsLimit
+                  ? { color: 'red' }
+                  : { color: 'black' },
+            }}
+          />
+        ))}
+
+      <p>** Battleline **</p>
+      {pool.battleline &&
+        pool.battleline.map((unit) => (
+          <UnitComponent
+            className="unit"
+            key={`list${unit.id}`}
+            {...{
+              unit,
+              cb: handleAdd,
+              category: 'battleline',
+              buttonText: 'Add',
+              style:
+                points + unit.points > form.pointsLimit && form.pointsLimit
+                  ? { color: 'red' }
+                  : { color: 'black' },
+            }}
+          />
+        ))}
+
+      <p>** Other **</p>
+
+      {pool.other &&
+        pool.other.map((unit) => (
+          <UnitComponent
+            className="unit"
+            key={`list${unit.id}`}
+            {...{
+              unit,
+              cb: handleAdd,
+              category: 'other',
+              buttonText: 'Add',
+              style:
+                points + unit.points > form.pointsLimit && form.pointsLimit
+                  ? { color: 'red' }
+                  : { color: 'black' },
+            }}
+          />
+        ))}
+
+      <p>** Dedicated Transport **</p>
+
+      {pool.dedicatedTransport &&
+        pool.dedicatedTransport.map((unit) => (
+          <UnitComponent
+            className="unit"
+            key={`list${unit.id}`}
+            {...{
+              unit,
+              cb: handleAdd,
+              category: 'dedicatedTransport',
+              buttonText: 'Add',
+              style:
+                points + unit.points > form.pointsLimit && form.pointsLimit
+                  ? { color: 'red' }
+                  : { color: 'black' },
+            }}
+          />
+        ))}
+    </section>
+  )
 }

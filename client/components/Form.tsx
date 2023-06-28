@@ -20,7 +20,6 @@ export function FormComponent(props: Props) {
       ...form,
       [e.target.name]: e.target.value,
     })
-    console.log(form)
   }
 
   function handleFaction(e: React.ChangeEvent<HTMLInputElement>) {

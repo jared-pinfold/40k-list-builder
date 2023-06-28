@@ -36,7 +36,6 @@ const ExportList = new JsPDF()
       yCoord += 5
       ExportList.setFontSize(10)
       ExportList.text(20, yCoord, `Wargear: ${unit.wargear}`)
-      console.log('map ', unit.name, ' ', yCoord)
       yCoord += 10
     })
     ExportList.save(`${form.armyName.replace(/ /gi, '_')}.pdf`)

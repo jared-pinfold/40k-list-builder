@@ -36,7 +36,7 @@ function App() {
   }, [pool, list])
 
   return (
-    <div>
+    <>
       <header>
         <h1>{`Jared's Warhammer 40k List builder`}</h1>
         <p>
@@ -45,13 +45,13 @@ function App() {
         </p>
         <FormComponent {...formProps} />
       </header>
-      <body>
+      <main>
         <div className="container">
           <Pool {...listProps} />
           <ListComponent {...listProps} />
         </div>
-      </body>
-    </div>
+      </main>
+    </>
   )
 }
 

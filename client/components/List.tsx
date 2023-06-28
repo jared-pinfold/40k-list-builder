@@ -1,7 +1,7 @@
-import { Unit, List, Form } from "../models"
+import { Unit, List, Form, Attribute } from "../models"
 import { sortStr, exportPDF } from "../utils"
+import { UnitComponent } from "./Unit"
 
-type Attribute = keyof List
 interface Props {
   form: Form
   setPool: React.Dispatch<React.SetStateAction<List>>
@@ -14,6 +14,7 @@ interface Props {
 export function ListComponent (props: Props) {
 
   const {form, setPool, setList, list, pool, points } = props
+  const style = { color: 'black' }
 
   function handleRemove(unit: Unit, category: Attribute) {
     setPool({ ...pool, [category]: [...pool[category], unit].sort(sortStr) })
@@ -40,62 +41,48 @@ export function ListComponent (props: Props) {
             </span>{' '}
             <button onClick={() => exportPDF(list, form, points)}>Export</button>
           </h2>
+
+
           <p>** Characters **</p>
           {list.characters ? (
             list.characters.map((unit) => (
-              <article className='unit' key={`list${unit.id}`}>
-                <h3>
-                  {unit.models} {unit.name} - {unit.points}pts{' '}
-                  <button onClick={() => handleRemove(unit, 'characters')}>
-                    Remove
-                  </button>
-                </h3>
-                <p>Wargear: {unit.wargear}</p>
-              </article>
+              <UnitComponent className="unit" key={`list${unit.id}`}
+              {...{
+                unit, cb: handleRemove, category: "characters", buttonText: "Remove", style
+              }}/>
             ))
           ) : (
             <div></div>
           )}
+
+
           <p>** Battleline **</p>
           {list.battleline &&
             list.battleline.map((unit) => (
-              <article className='unit' key={`list${unit.id}`}>
-                <h3>
-                  {unit.models} {unit.name} - {unit.points}pts{' '}
-                  <button onClick={() => handleRemove(unit, 'battleline')}>
-                    Remove
-                  </button>
-                </h3>
-                <p>Wargear: {unit.wargear}</p>
-              </article>
+              <UnitComponent className="unit" key={`list${unit.id}`}
+              {...{
+                unit, cb: handleRemove, category: "battleline", buttonText: "Remove", style
+              }}/>
             ))}
+
+
           <p>** Other **</p>
           {list.other &&
             list.other.map((unit) => (
-              <article className='unit' key={`list${unit.id}`}>
-                <h3>
-                  {unit.models} {unit.name} - {unit.points}pts{' '}
-                  <button onClick={() => handleRemove(unit, 'other')}>
-                    Remove
-                  </button>
-                </h3>
-                <p>Wargear: {unit.wargear}</p>
-              </article>
+              <UnitComponent className="unit" key={`list${unit.id}`}
+              {...{
+                unit, cb: handleRemove, category: "other", buttonText: "Remove", style
+              }}/>
             ))}
+
+
           <p>** Dedicated Transport **</p>
           {list.dedicatedTransport &&
             list.dedicatedTransport.map((unit) => (
-              <article className='unit' key={`list${unit.id}`}>
-                <h3>
-                  {unit.models} {unit.name} - {unit.points}pts{' '}
-                  <button
-                    onClick={() => handleRemove(unit, 'dedicatedTransport')}
-                  >
-                    Remove
-                  </button>
-                </h3>
-                <p>Wargear: {unit.wargear}</p>
-              </article>
+              <UnitComponent className="unit" key={`list${unit.id}`}
+              {...{
+                unit, cb: handleRemove, category: "dedicatedTransport", buttonText: "Remove", style
+              }}/>
             ))}
         </section>)
 }

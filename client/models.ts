@@ -17,3 +17,5 @@ export interface Form {
   armyName: string
   pointsLimit: number
 }
+
+export type Attribute = keyof List
