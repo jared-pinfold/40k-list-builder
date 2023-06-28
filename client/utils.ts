@@ -41,3 +41,10 @@ const ExportList = new JsPDF()
     })
     ExportList.save(`${form.armyName.replace(/ /gi, '_')}.pdf`)
 }
+
+export const emptyList: List = {
+  characters: [],
+  battleline: [],
+  other: [],
+  dedicatedTransport: [],
+}

@@ -12,3 +12,8 @@ export interface List {
   other: Unit[]
   dedicatedTransport: Unit[]
 }
+
+export interface Form {
+  armyName: string
+  pointsLimit: number
+}
