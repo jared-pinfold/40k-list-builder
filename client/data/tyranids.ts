@@ -15,7 +15,7 @@ export const tyranidsData: List = {
       id: 4,
       name: 'Neurotyrant',
       models: 1,
-      wargear: 'Psychic Scream, Neurotyran Claws & Lashes',
+      wargear: 'Psychic Scream, Neurotyrant Claws & Lashes',
       points: 105,
     },
     {

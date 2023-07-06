@@ -124,7 +124,7 @@ export const spaceMarinesData: List = {
       id: 16,
       name: 'Repulsor',
       models: 1,
-      wargear: 'Las-Talon, Twin Las Cannons, Repulsor Refensive Array, Hunter-Slayer Missile, Armoured Hull',
+      wargear: 'Las-Talon, Twin Las Cannons, Repulsor Defensive Array, Hunter-Slayer Missile, Armoured Hull',
       points: 195,
     },
     {
